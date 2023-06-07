@@ -1,47 +1,63 @@
 package com.svt.todoapp.services.impl;
 
+import com.svt.todoapp.dto.TaskCreationDto;
+import com.svt.todoapp.dto.TaskDto;
+import com.svt.todoapp.mapping.TaskMapper;
 import com.svt.todoapp.models.Task;
 import com.svt.todoapp.repositories.TaskRepository;
 import com.svt.todoapp.services.TaskService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TaskServiceImpl implements TaskService {
 
-    private final DateFormat DATE_FORMAT = new SimpleDateFormat("dd MMMM yyyy");
+    @Autowired
+    private final TaskMapper taskMapper;
 
     @Autowired
     private final TaskRepository taskRepository;
 
     @Override
-    public List<Task> getAll() {
-        return taskRepository.findAll();
+    public List<TaskDto> getAll() {
+        return taskRepository.findAll().stream().map(taskMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
-    public Task getById(Long id) throws ConfigDataResourceNotFoundException {
-        Optional<Task> task = taskRepository.findById(id);
-        if(task.isPresent()){
-            return task.get();
-        }
-       throw new RuntimeException();
+    public TaskDto getById(Long id) {
+        return taskMapper.toDto(Objects.requireNonNull(taskRepository.findById(id).orElse(null)));
     }
 
     @Override
-    public Task create(Task task) {
-        task.setCreatedDate(new Date());
+    public void create(TaskCreationDto taskDto) {
+        Task task = taskMapper.toEntity(taskDto);
+        taskRepository.save(task);
+    }
+
+    @Override
+    public TaskDto update(Long id, TaskDto taskDto) {
+        Task task = taskRepository.findById(id).orElse(null);
+        assert task != null;
+        task.setTitle(taskDto.getTitle());
+        task.setDescription(taskDto.getDescription());
         task.setChangedDate(new Date());
-        task.setComplete(false);
-        return taskRepository.save(task);
+        taskRepository.save(task);
+        return taskMapper.toDto(task);
     }
+
+    @Override
+    public void delete(Long id) {
+        taskRepository.deleteById(id);
+    }
+
+
 }

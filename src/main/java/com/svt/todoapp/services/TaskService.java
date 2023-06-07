@@ -1,16 +1,21 @@
 package com.svt.todoapp.services;
 
+import com.svt.todoapp.dto.TaskCreationDto;
+import com.svt.todoapp.dto.TaskDto;
 import com.svt.todoapp.models.Task;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface TaskService {
 
-    List<Task> getAll();
+    List<TaskDto> getAll();
 
-    Task getById(Long id);
+    TaskDto getById(Long id);
 
-    Task create(Task task);
+    void create(TaskCreationDto task);
+
+    TaskDto update(Long id, TaskDto taskDto);
+
+    void delete(Long id);
 
 }

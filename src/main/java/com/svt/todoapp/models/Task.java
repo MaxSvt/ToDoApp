@@ -1,5 +1,6 @@
 package com.svt.todoapp.models;
 
+import com.svt.todoapp.models.enums.TaskStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,7 +19,8 @@ public class Task {
     private Long id;
     private String title;
     private String description;
-    private boolean complete;
+    @Enumerated(EnumType.STRING)
+    private TaskStatus status;
     private Date createdDate;
     private Date changedDate;
 
@@ -28,7 +30,7 @@ public class Task {
     public Task(String title, String description) {
         this.title = title;
         this.description = description;
-        this.complete = false;
+        this.status = TaskStatus.NEW;
         this.createdDate = new Date();
         this.changedDate = new Date();
     }
@@ -39,7 +41,6 @@ public class Task {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", complete=" + complete +
                 ", createdDate=" + createdDate +
                 ", changedDate=" + changedDate +
                 '}';
