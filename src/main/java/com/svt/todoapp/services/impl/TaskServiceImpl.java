@@ -2,8 +2,10 @@ package com.svt.todoapp.services.impl;
 
 import com.svt.todoapp.dto.TaskCreationDto;
 import com.svt.todoapp.dto.TaskDto;
+import com.svt.todoapp.dto.UpdateTaskStatusDto;
 import com.svt.todoapp.mapping.TaskMapper;
 import com.svt.todoapp.models.Task;
+import com.svt.todoapp.models.enums.TaskStatus;
 import com.svt.todoapp.repositories.TaskRepository;
 import com.svt.todoapp.services.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -59,5 +61,28 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.deleteById(id);
     }
 
+    public TaskDto updateStatus(Long id, UpdateTaskStatusDto statusDto){
+        Task task = taskRepository.findById(id).orElse(null);
+        assert task != null;
+        if(Objects.requireNonNull(checkStatus(statusDto.getStatus())).ordinal() - task.getStatus().ordinal() == 1){
+            switch (task.getStatus()){
+                case NEW -> task.setStatus(TaskStatus.IN_WORK);
+                case IN_WORK -> task.setStatus(TaskStatus.COMPLETED);
+                case COMPLETED -> task.setStatus(TaskStatus.CLOSED);
+            }
+        }
+        taskRepository.save(task);
+        return taskMapper.toDto(task);
+    }
+
+    private static TaskStatus checkStatus(String status){
+        for(TaskStatus taskStatus : TaskStatus.values()){
+            if(taskStatus.getTitle().equals(status)){
+                return taskStatus;
+            }
+        }
+        // Добавить исключение!!!
+        return null;
+    }
 
 }

@@ -2,8 +2,7 @@ package com.svt.todoapp.controllers;
 
 import com.svt.todoapp.dto.TaskCreationDto;
 import com.svt.todoapp.dto.TaskDto;
-import com.svt.todoapp.mapping.TaskMapper;
-import com.svt.todoapp.models.Task;
+import com.svt.todoapp.dto.UpdateTaskStatusDto;
 import com.svt.todoapp.services.impl.TaskServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +42,12 @@ public class TaskController {
     public String deleteTask(@PathVariable Long id){
         taskService.delete(id);
         return "Task has been deleted successfully";
+    }
+
+    @PostMapping(value = "/{id}")
+    public ResponseEntity<TaskDto> updateStatus(@PathVariable Long id, @RequestBody UpdateTaskStatusDto statusDto){
+        TaskDto postResponse = taskService.updateStatus(id, statusDto);
+        return ResponseEntity.ok().body(postResponse);
     }
 
 }

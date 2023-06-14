@@ -2,7 +2,6 @@ package com.svt.todoapp.services;
 
 import com.svt.todoapp.dto.TaskCreationDto;
 import com.svt.todoapp.dto.TaskDto;
-import com.svt.todoapp.models.Task;
 
 import java.util.List;
 
