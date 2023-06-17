@@ -49,6 +49,9 @@ public class TaskServiceImpl implements TaskService {
     public TaskDto update(Long id, TaskDto taskDto) {
         Task task = taskRepository.findById(id).orElse(null);
         assert task != null;
+        if(taskDto.getTitle().isEmpty() || taskDto.getDescription().isEmpty()){
+            new NullPointerException().getMessage();
+        }
         task.setTitle(taskDto.getTitle());
         task.setDescription(taskDto.getDescription());
         task.setChangedDate(new Date());

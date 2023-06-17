@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 @Component
 public class TaskMapper {
 
-    private final DateFormat DATE_FORMAT = new SimpleDateFormat("dd MMMM yyyy");
+    private final DateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
     public TaskDto toDto(Task task){
         return new TaskDto(
@@ -25,6 +25,10 @@ public class TaskMapper {
     }
 
     public Task toEntity(TaskCreationDto dto){
+        // ДОБАВИТЬ ИСКЛЮЧЕНИЕ!!!
+        if(dto.getTitle().isEmpty() || dto.getDescription().isEmpty()){
+            new NullPointerException().getMessage();
+        }
         return new Task(dto.getTitle(), dto.getDescription());
     }
 }

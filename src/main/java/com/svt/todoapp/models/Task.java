@@ -1,11 +1,11 @@
 package com.svt.todoapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.svt.todoapp.models.enums.TaskStatus;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -23,6 +23,10 @@ public class Task {
     private TaskStatus status;
     private Date createdDate;
     private Date changedDate;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "project_id", nullable = false)
+    @JsonIgnore
+    private Project project;
 
     public Task() {
     }
