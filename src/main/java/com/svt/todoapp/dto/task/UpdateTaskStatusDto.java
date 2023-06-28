@@ -1,4 +1,4 @@
-package com.svt.todoapp.dto;
+package com.svt.todoapp.dto.task;
 
 public class UpdateTaskStatusDto {
     private Long id;

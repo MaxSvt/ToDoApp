@@ -1,8 +1,8 @@
 package com.svt.todoapp.controllers;
 
-import com.svt.todoapp.dto.TaskCreationDto;
-import com.svt.todoapp.dto.TaskDto;
-import com.svt.todoapp.dto.UpdateTaskStatusDto;
+import com.svt.todoapp.dto.task.TaskCreationDto;
+import com.svt.todoapp.dto.task.TaskDto;
+import com.svt.todoapp.dto.task.UpdateTaskStatusDto;
 import com.svt.todoapp.services.impl.TaskServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

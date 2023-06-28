@@ -20,9 +20,19 @@ public class Project {
     private Long id;
     private String title;
     private String description;
-    private ProjectStatus projectStatus;
+    @Enumerated(EnumType.STRING)
+    private ProjectStatus status;
     @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Task> tasks = new ArrayList<>();
+
+    public Project() {
+    }
+
+    public Project(String title, String description) {
+        this.title = title;
+        this.description = description;
+        this.status = ProjectStatus.CREATED;
+    }
 
     public void addTask(Task task){
         tasks.add(task);
@@ -44,6 +54,17 @@ public class Project {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, projectStatus, tasks);
+        return Objects.hash(id, title, description, status, tasks);
+    }
+
+    @Override
+    public String toString() {
+        return "Project{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", projectStatus=" + status +
+                ", tasks=" + tasks +
+                '}';
     }
 }

@@ -1,17 +1,20 @@
-package com.svt.todoapp.dto;
+package com.svt.todoapp.dto.project;
 
+
+import com.svt.todoapp.dto.task.TaskDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
-public class TaskDto {
+public class ProjectDto {
     private Long id;
     private String title;
     private String description;
     private String status;
-    private String createdDate;
-    private String changedDate;
+    private List<TaskDto> tasks;
 }

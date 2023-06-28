@@ -1,9 +1,9 @@
 package com.svt.todoapp.services.impl;
 
-import com.svt.todoapp.dto.TaskCreationDto;
-import com.svt.todoapp.dto.TaskDto;
-import com.svt.todoapp.dto.UpdateTaskStatusDto;
-import com.svt.todoapp.mapping.TaskMapper;
+import com.svt.todoapp.dto.task.TaskCreationDto;
+import com.svt.todoapp.dto.task.TaskDto;
+import com.svt.todoapp.dto.task.UpdateTaskStatusDto;
+import com.svt.todoapp.mapping.Mapper;
 import com.svt.todoapp.models.Task;
 import com.svt.todoapp.models.enums.TaskStatus;
 import com.svt.todoapp.repositories.TaskRepository;
@@ -24,24 +24,24 @@ import java.util.stream.Collectors;
 public class TaskServiceImpl implements TaskService {
 
     @Autowired
-    private final TaskMapper taskMapper;
+    private final Mapper mapper;
 
     @Autowired
     private final TaskRepository taskRepository;
 
     @Override
     public List<TaskDto> getAll() {
-        return taskRepository.findAll().stream().map(taskMapper::toDto).collect(Collectors.toList());
+        return taskRepository.findAll().stream().map(mapper::toTaskDto).collect(Collectors.toList());
     }
 
     @Override
     public TaskDto getById(Long id) {
-        return taskMapper.toDto(Objects.requireNonNull(taskRepository.findById(id).orElse(null)));
+        return mapper.toTaskDto(Objects.requireNonNull(taskRepository.findById(id).orElse(null)));
     }
 
     @Override
     public void create(TaskCreationDto taskDto) {
-        Task task = taskMapper.toEntity(taskDto);
+        Task task = mapper.toTaskEntity(taskDto);
         taskRepository.save(task);
     }
 
@@ -56,7 +56,7 @@ public class TaskServiceImpl implements TaskService {
         task.setDescription(taskDto.getDescription());
         task.setChangedDate(new Date());
         taskRepository.save(task);
-        return taskMapper.toDto(task);
+        return mapper.toTaskDto(task);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class TaskServiceImpl implements TaskService {
             }
         }
         taskRepository.save(task);
-        return taskMapper.toDto(task);
+        return mapper.toTaskDto(task);
     }
 
     private static TaskStatus checkStatus(String status){

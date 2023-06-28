@@ -1,7 +1,7 @@
 package com.svt.todoapp.services;
 
-import com.svt.todoapp.dto.TaskCreationDto;
-import com.svt.todoapp.dto.TaskDto;
+import com.svt.todoapp.dto.task.TaskCreationDto;
+import com.svt.todoapp.dto.task.TaskDto;
 
 import java.util.List;
 

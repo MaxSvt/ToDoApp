@@ -1,9 +1,9 @@
-package com.svt.todoapp.dto;
+package com.svt.todoapp.dto.project;
 
 import lombok.Getter;
 
 @Getter
-public class TaskCreationDto {
+public class ProjectCreationDto {
     private String title;
     private String description;
 }
