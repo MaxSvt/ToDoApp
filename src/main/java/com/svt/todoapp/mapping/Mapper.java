@@ -29,8 +29,7 @@ public class Mapper implements MapStructMapper {
                 task.getDescription(),
                 task.getStatus().getTitle(),
                 DATE_FORMAT.format(task.getCreatedDate()),
-                DATE_FORMAT.format(task.getChangedDate()),
-                toProjectDto(task.getProject())
+                DATE_FORMAT.format(task.getChangedDate())
         );
     }
 

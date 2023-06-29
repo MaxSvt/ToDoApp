@@ -15,5 +15,4 @@ public class TaskDto {
     private String status;
     private String createdDate;
     private String changedDate;
-    private ProjectDto projectDto;
 }

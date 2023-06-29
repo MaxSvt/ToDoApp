@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface TaskService {
 
-    List<TaskDto> getAll();
+    List<TaskDto> getAll(Long projectId);
 
-    TaskDto getById(Long id);
+    TaskDto getById(Long projectId, Long id);
 
-    void create(TaskCreationDto task);
+    void create(Long projectId, TaskCreationDto task);
 
     TaskDto update(Long id, TaskDto taskDto);
 

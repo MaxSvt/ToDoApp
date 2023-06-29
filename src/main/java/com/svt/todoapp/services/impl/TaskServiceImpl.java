@@ -4,8 +4,10 @@ import com.svt.todoapp.dto.task.TaskCreationDto;
 import com.svt.todoapp.dto.task.TaskDto;
 import com.svt.todoapp.dto.task.UpdateTaskStatusDto;
 import com.svt.todoapp.mapping.Mapper;
+import com.svt.todoapp.models.Project;
 import com.svt.todoapp.models.Task;
 import com.svt.todoapp.models.enums.TaskStatus;
+import com.svt.todoapp.repositories.ProjectRepository;
 import com.svt.todoapp.repositories.TaskRepository;
 import com.svt.todoapp.services.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,19 +32,33 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private final TaskRepository taskRepository;
 
+    @Autowired
+    private final ProjectRepository projectRepository;
+
     @Override
-    public List<TaskDto> getAll() {
-        return taskRepository.findAll().stream().map(mapper::toTaskDto).collect(Collectors.toList());
+    public List<TaskDto> getAll(Long projectId) {
+        return taskRepository.findByProjectId(projectId).stream().map(mapper::toTaskDto).collect(Collectors.toList());
+//        return taskRepository.findAll().stream().map(mapper::toTaskDto).collect(Collectors.toList());
     }
 
     @Override
-    public TaskDto getById(Long id) {
-        return mapper.toTaskDto(Objects.requireNonNull(taskRepository.findById(id).orElse(null)));
+    public TaskDto getById(Long projectId, Long id) {
+        List<Task> list =  taskRepository.findByProjectId(projectId).stream().toList();
+        for(Task task: list){
+            if(task.getId().equals(id)){
+                return mapper.toTaskDto(task);
+            }
+        }
+        return null;
+//        return mapper.toTaskDto(Objects.requireNonNull(taskRepository.findById(id).orElse(null)));
     }
 
     @Override
-    public void create(TaskCreationDto taskDto) {
+    public void create(Long projectId, TaskCreationDto taskDto) {
+        Project project = projectRepository.findById(projectId).orElse(null);
         Task task = mapper.toTaskEntity(taskDto);
+        assert project != null;
+        project.addTask(task);
         taskRepository.save(task);
     }
 
