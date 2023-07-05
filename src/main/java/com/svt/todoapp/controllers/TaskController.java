@@ -4,11 +4,16 @@ import com.svt.todoapp.dto.task.TaskCreationDto;
 import com.svt.todoapp.dto.task.TaskDto;
 import com.svt.todoapp.dto.task.UpdateTaskStatusDto;
 import com.svt.todoapp.exceptions.ResourceNotFoundException;
+import com.svt.todoapp.models.Task;
 import com.svt.todoapp.repositories.ProjectRepository;
+import com.svt.todoapp.repositories.TaskRepository;
 import com.svt.todoapp.services.impl.TaskServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -18,6 +23,7 @@ public class TaskController {
 
     private final TaskServiceImpl taskService;
     private final ProjectRepository projectRepository;
+    private final TaskRepository taskRepository;
 
     @GetMapping(value = "/projects/{projectId}/tasks")
     public Iterable<TaskDto> getAll(@PathVariable(value = "projectId") Long projectId){
@@ -27,12 +33,9 @@ public class TaskController {
         return taskService.getAll(projectId);
     }
 
-    @GetMapping(value = "/projects/{projectId}/tasks/{id}")
-    public TaskDto getById(@PathVariable("projectId") Long projectId, @PathVariable("id") Long id){
-        if (!projectRepository.existsById(projectId)) {
-            throw new ResourceNotFoundException("Not found Project with id = " + projectId);
-        }
-        return taskService.getById(projectId, id);
+    @GetMapping(value = "/tasks/{id}")
+    public TaskDto getById(@PathVariable("id") Long id){
+        return taskService.getById(id);
     }
 
     @PostMapping(value = "/projects/{projectId}/tasks")
@@ -41,22 +44,31 @@ public class TaskController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping(value = "/{id}")
+    @PostMapping(value = "/tasks/{id}")
+    public ResponseEntity<TaskDto> updateStatus(@PathVariable Long id, @RequestBody UpdateTaskStatusDto statusDto){
+        TaskDto postResponse = taskService.updateStatus(id, statusDto);
+        return ResponseEntity.ok().body(postResponse);
+    }
+
+    @PutMapping(value = "/tasks/{id}")
     public ResponseEntity<TaskDto> updateTask(@PathVariable Long id, @RequestBody TaskDto taskDto){
         TaskDto postResponse = taskService.update(id, taskDto);
         return ResponseEntity.ok().body(postResponse);
     }
 
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/tasks/{id}")
     public String deleteTask(@PathVariable Long id){
         taskService.delete(id);
         return "Task has been deleted successfully";
     }
 
-    @PostMapping(value = "/{id}")
-    public ResponseEntity<TaskDto> updateStatus(@PathVariable Long id, @RequestBody UpdateTaskStatusDto statusDto){
-        TaskDto postResponse = taskService.updateStatus(id, statusDto);
-        return ResponseEntity.ok().body(postResponse);
+    @DeleteMapping(value = "/projects/{projectId}/tasks")
+    public ResponseEntity<List<Task>> deleteAllTasksOfProject(@PathVariable(value = "projectId") Long projectId){
+        if(!projectRepository.existsById(projectId)){
+            throw new ResourceNotFoundException("Not found Project with id =" + projectId);
+        }
+        taskRepository.deleteByProjectId(projectId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

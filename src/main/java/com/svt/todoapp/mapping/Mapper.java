@@ -2,8 +2,10 @@ package com.svt.todoapp.mapping;
 
 import com.svt.todoapp.dto.project.ProjectCreationDto;
 import com.svt.todoapp.dto.project.ProjectDto;
+import com.svt.todoapp.dto.project.ProjectSlimDto;
 import com.svt.todoapp.dto.task.TaskCreationDto;
 import com.svt.todoapp.dto.task.TaskDto;
+import com.svt.todoapp.dto.task.TaskSlimDto;
 import com.svt.todoapp.models.Project;
 import com.svt.todoapp.models.Task;
 import org.springframework.stereotype.Component;
@@ -29,7 +31,17 @@ public class Mapper implements MapStructMapper {
                 task.getDescription(),
                 task.getStatus().getTitle(),
                 DATE_FORMAT.format(task.getCreatedDate()),
-                DATE_FORMAT.format(task.getChangedDate())
+                DATE_FORMAT.format(task.getChangedDate()),
+                toProjectSlimDto(task.getProject())
+        );
+    }
+
+    @Override
+    public TaskSlimDto toTaskSlimDto(Task task) {
+        return new TaskSlimDto(
+                task.getId(),
+                task.getTitle(),
+                task.getStatus().getTitle()
         );
     }
 
@@ -54,6 +66,15 @@ public class Mapper implements MapStructMapper {
     }
 
     @Override
+    public ProjectSlimDto toProjectSlimDto(Project project) {
+        return new ProjectSlimDto(
+                project.getId(),
+                project.getTitle(),
+                project.getStatus().getTitle()
+        );
+    }
+
+    @Override
     public Project toProjectEntity(ProjectCreationDto dto) {
         if(dto.getTitle().isEmpty() || dto.getDescription().isEmpty()){
             new NullPointerException().getMessage();
@@ -61,15 +82,14 @@ public class Mapper implements MapStructMapper {
         return new Project(dto.getTitle(), dto.getDescription());
     }
 
-    protected List<TaskDto> taskDtoList(List<Task> list){
+    protected List<TaskSlimDto> taskDtoList(List<Task> list){
         if(list.isEmpty()){
             return null;
         }
-        List<TaskDto> dtoList = new ArrayList<>();
+        List<TaskSlimDto> dtoList = new ArrayList<>();
         for(Task task : list){
-            dtoList.add(toTaskDto(task));
+            dtoList.add(toTaskSlimDto(task));
         }
-
         return dtoList;
     }
 }

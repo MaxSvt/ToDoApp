@@ -1,6 +1,5 @@
 package com.svt.todoapp.dto.task;
 
-import com.svt.todoapp.dto.project.ProjectSlimDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,12 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class TaskDto {
+public class TaskSlimDto {
     private Long id;
     private String title;
-    private String description;
     private String status;
-    private String createdDate;
-    private String changedDate;
-    private ProjectSlimDto project;
 }

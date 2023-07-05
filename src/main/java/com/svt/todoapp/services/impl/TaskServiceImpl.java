@@ -42,15 +42,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDto getById(Long projectId, Long id) {
-        List<Task> list =  taskRepository.findByProjectId(projectId).stream().toList();
-        for(Task task: list){
-            if(task.getId().equals(id)){
-                return mapper.toTaskDto(task);
-            }
-        }
-        return null;
-//        return mapper.toTaskDto(Objects.requireNonNull(taskRepository.findById(id).orElse(null)));
+    public TaskDto getById(Long id) {
+        return mapper.toTaskDto(taskRepository.findById(id).orElse(null));
     }
 
     @Override

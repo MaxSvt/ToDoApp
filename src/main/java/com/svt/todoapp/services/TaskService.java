@@ -9,7 +9,7 @@ public interface TaskService {
 
     List<TaskDto> getAll(Long projectId);
 
-    TaskDto getById(Long projectId, Long id);
+    TaskDto getById(Long id);
 
     void create(Long projectId, TaskCreationDto task);
 
