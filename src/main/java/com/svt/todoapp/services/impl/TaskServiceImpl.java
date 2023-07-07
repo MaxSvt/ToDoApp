@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,7 +55,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDto update(Long id, TaskDto taskDto) {
+    public TaskDto update(Long id, TaskCreationDto taskDto) {
         Task task = taskRepository.findById(id).orElse(null);
         assert task != null;
         if(taskDto.getTitle().isEmpty() || taskDto.getDescription().isEmpty()){

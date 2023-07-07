@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "tasks")
@@ -27,6 +28,8 @@ public class Task {
     @JoinColumn(name = "project_id", nullable = false)
     @JsonIgnore
     private Project project;
+    @OneToMany(mappedBy = "task", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Comment> comments;
 
     public Task() {
     }
@@ -48,5 +51,15 @@ public class Task {
                 ", createdDate=" + createdDate +
                 ", changedDate=" + changedDate +
                 '}';
+    }
+
+    public void addComment(Comment comment){
+        comments.add(comment);
+        comment.setTask(this);
+    }
+
+    public void removeComment(Comment comment){
+        comments.remove(comment);
+        comment.setTask(null);
     }
 }

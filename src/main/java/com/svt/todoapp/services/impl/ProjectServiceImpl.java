@@ -42,7 +42,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectDto update(Long id, ProjectDto projectDto) {
+    public ProjectDto update(Long id, ProjectCreationDto projectDto) {
         Project project = projectRepository.findById(id).orElse(null);
         assert project != null;
         project.setTitle(projectDto.getTitle());

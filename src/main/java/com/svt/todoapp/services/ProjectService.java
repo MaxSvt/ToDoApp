@@ -13,7 +13,7 @@ public interface ProjectService {
 
     void create(ProjectCreationDto project);
 
-    ProjectDto update(Long id, ProjectDto projectDto);
+    ProjectDto update(Long id, ProjectCreationDto projectDto);
 
     void delete(Long id);
 }

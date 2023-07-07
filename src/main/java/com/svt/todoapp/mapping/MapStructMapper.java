@@ -1,11 +1,14 @@
 package com.svt.todoapp.mapping;
 
+import com.svt.todoapp.dto.comment.CommentCreationDto;
+import com.svt.todoapp.dto.comment.CommentDto;
 import com.svt.todoapp.dto.project.ProjectCreationDto;
 import com.svt.todoapp.dto.project.ProjectDto;
 import com.svt.todoapp.dto.project.ProjectSlimDto;
 import com.svt.todoapp.dto.task.TaskCreationDto;
 import com.svt.todoapp.dto.task.TaskDto;
 import com.svt.todoapp.dto.task.TaskSlimDto;
+import com.svt.todoapp.models.Comment;
 import com.svt.todoapp.models.Project;
 import com.svt.todoapp.models.Task;
 
@@ -22,4 +25,8 @@ public interface MapStructMapper {
     ProjectSlimDto toProjectSlimDto(Project project);
 
     Project toProjectEntity(ProjectCreationDto dto);
+
+    CommentDto toCommentDto(Comment comment);
+
+    Comment toCommentEntity(CommentCreationDto dto);
 }
