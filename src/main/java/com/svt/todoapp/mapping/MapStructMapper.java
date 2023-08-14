@@ -8,9 +8,11 @@ import com.svt.todoapp.dto.project.ProjectSlimDto;
 import com.svt.todoapp.dto.task.TaskCreationDto;
 import com.svt.todoapp.dto.task.TaskDto;
 import com.svt.todoapp.dto.task.TaskSlimDto;
+import com.svt.todoapp.dto.user.RegistrationUserDto;
 import com.svt.todoapp.models.Comment;
 import com.svt.todoapp.models.Project;
 import com.svt.todoapp.models.Task;
+import com.svt.todoapp.models.User;
 
 public interface MapStructMapper {
 
@@ -29,4 +31,6 @@ public interface MapStructMapper {
     CommentDto toCommentDto(Comment comment);
 
     Comment toCommentEntity(CommentCreationDto dto);
+
+    User toUserEntity(RegistrationUserDto registrationUserDto);
 }

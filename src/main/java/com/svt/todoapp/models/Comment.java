@@ -11,12 +11,13 @@ import java.util.Date;
 @Getter
 @Setter
 public class Comment {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String description;
     private Date createdDate;
     private boolean isUpdated;
-    private Date updatedDate;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "task_id", nullable = false)
     @JsonIgnore
@@ -28,7 +29,11 @@ public class Comment {
     public Comment(String description) {
         this.description = description;
         this.createdDate = new Date();
-        this.updatedDate = new Date();
         this.isUpdated = false;
+    }
+
+    public boolean changeStatus(boolean b) {
+        this.isUpdated = b;
+        return b;
     }
 }

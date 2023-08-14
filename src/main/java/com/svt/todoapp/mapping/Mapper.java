@@ -8,13 +8,18 @@ import com.svt.todoapp.dto.project.ProjectSlimDto;
 import com.svt.todoapp.dto.task.TaskCreationDto;
 import com.svt.todoapp.dto.task.TaskDto;
 import com.svt.todoapp.dto.task.TaskSlimDto;
+import com.svt.todoapp.dto.user.RegistrationUserDto;
 import com.svt.todoapp.models.Comment;
 import com.svt.todoapp.models.Project;
 import com.svt.todoapp.models.Task;
+import com.svt.todoapp.models.User;
+import com.svt.todoapp.models.enums.Role;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +27,11 @@ import java.util.List;
 public class Mapper implements MapStructMapper {
 
     private final DateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-    private final String IS_UPDATED = "Изменен";
+    private final PasswordEncoder passwordEncoder;
+
+    public Mapper(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public TaskDto toTaskDto(Task task){
@@ -95,11 +104,8 @@ public class Mapper implements MapStructMapper {
         commentDto.setDescription(comment.getDescription());
         commentDto.setCreationDate(DATE_FORMAT.format(comment.getCreatedDate()));
         if(comment.isUpdated()){
-            commentDto.setIsUpdated(IS_UPDATED);
-        } else{
-            commentDto.setIsUpdated("Не изменен");
+            commentDto.setUpdated(true);
         }
-        commentDto.setUpdatedDate(DATE_FORMAT.format(comment.getUpdatedDate()));
         return commentDto;
     }
 
@@ -109,6 +115,18 @@ public class Mapper implements MapStructMapper {
             new NullPointerException().getMessage();
         }
         return new Comment(dto.getDescription());
+    }
+
+    @Override
+    public User toUserEntity(RegistrationUserDto registrationUserDto) {
+        User user = new User();
+        user.setEmail(registrationUserDto.getEmail());
+        user.setUsername(registrationUserDto.getUsername());
+        user.setPassword(passwordEncoder.encode(registrationUserDto.getPassword()));
+        user.getRoles().add(Role.ROLE_USER);
+        user.setActive(true);
+        user.setCreatedDate(LocalDateTime.now());
+        return user;
     }
 
     protected List<TaskSlimDto> taskDtoList(List<Task> list){
