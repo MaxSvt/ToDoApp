@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("api/v1/projects")
+@RequestMapping("/api/v1/projects")
 @RequiredArgsConstructor
 public class ProjectController {
 
@@ -35,7 +35,7 @@ public class ProjectController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ProjectDto> updateProject(@PathVariable Long id, @RequestBody ProjectCreationDto projectDto){
+    public ResponseEntity<ProjectDto> updateProject(@PathVariable(value = "id") Long id, @RequestBody ProjectCreationDto projectDto){
         ProjectDto postResponse = projectService.update(id, projectDto);
         return ResponseEntity.ok().body(postResponse);
     }

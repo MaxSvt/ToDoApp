@@ -9,6 +9,5 @@ public class CommentDto {
     private Long id;
     private String description;
     private String creationDate;
-    private String isUpdated;
-    private String updatedDate;
+    private boolean isUpdated;
 }

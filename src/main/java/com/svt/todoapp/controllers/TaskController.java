@@ -45,19 +45,19 @@ public class TaskController {
     }
 
     @PostMapping(value = "/tasks/{id}")
-    public ResponseEntity<TaskDto> updateStatus(@PathVariable Long id, @RequestBody UpdateTaskStatusDto statusDto){
+    public ResponseEntity<TaskDto> updateStatus(@PathVariable(value = "id") Long id, @RequestBody UpdateTaskStatusDto statusDto){
         TaskDto postResponse = taskService.updateStatus(id, statusDto);
         return ResponseEntity.ok().body(postResponse);
     }
 
     @PutMapping(value = "/tasks/{id}")
-    public ResponseEntity<TaskDto> updateTask(@PathVariable Long id, @RequestBody TaskCreationDto taskDto){
+    public ResponseEntity<TaskDto> updateTask(@PathVariable(value = "id") Long id, @RequestBody TaskCreationDto taskDto){
         TaskDto postResponse = taskService.update(id, taskDto);
         return ResponseEntity.ok().body(postResponse);
     }
 
     @DeleteMapping(value = "/tasks/{id}")
-    public String deleteTask(@PathVariable Long id){
+    public String deleteTask(@PathVariable(value = "id") Long id){
         taskService.delete(id);
         return "Task has been deleted successfully";
     }
