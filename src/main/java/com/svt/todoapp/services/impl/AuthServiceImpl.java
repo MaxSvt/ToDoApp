@@ -3,8 +3,8 @@ package com.svt.todoapp.services.impl;
 import com.svt.todoapp.dto.jwt.JwtRequest;
 import com.svt.todoapp.dto.jwt.JwtResponse;
 import com.svt.todoapp.dto.user.RegistrationUserDto;
-import com.svt.todoapp.dto.user.UserDto;
 import com.svt.todoapp.exceptions.AppError;
+import com.svt.todoapp.mapping.Mapper;
 import com.svt.todoapp.models.User;
 import com.svt.todoapp.utils.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +22,13 @@ public class AuthServiceImpl {
     private final UserServiceImpl userService;
     private final JwtTokenUtil jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
+    private final Mapper mapper;
 
     public ResponseEntity<?> createAuthToken(JwtRequest authRequest){
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         } catch (BadCredentialsException e){
-            return new ResponseEntity<>(new AppError(HttpStatus.UNAUTHORIZED.value(), "No correct login or password"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new AppError(HttpStatus.UNAUTHORIZED.value(), "Incorrect login or password"), HttpStatus.UNAUTHORIZED);
         }
         UserDetails userDetails = userService.loadUserByUsername(authRequest.getUsername());
         String token = jwtTokenUtil.generateToken(userDetails);
@@ -35,10 +36,10 @@ public class AuthServiceImpl {
     }
 
     public ResponseEntity<?> createUser(RegistrationUserDto registrationUserDto){
-        if(userService.findByUserName(registrationUserDto.getUsername()).isPresent()){
-            return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), "Пользователь существует"), HttpStatus.BAD_REQUEST);
+        if(userService.findByEmail(registrationUserDto.getEmail()).isPresent()){
+            return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), "User exists"), HttpStatus.BAD_REQUEST);
         }
         User user = userService.createNewUser(registrationUserDto);
-        return ResponseEntity.ok(new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.isActive()));
+        return ResponseEntity.ok(mapper.toUserDto(user));
     }
 }

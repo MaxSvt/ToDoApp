@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = findByUserName(username).orElseThrow(()-> new UsernameNotFoundException(
-                String.format("Пользователь '%s' не найден", username)
+                String.format("User '%s' not found", username)
         ));
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
@@ -43,6 +43,10 @@ public class UserServiceImpl implements UserDetailsService {
 
     public Optional<User> findByUserName(String username){
         return userRepository.findByUsername(username);
+    }
+
+    public Optional<User> findByEmail(String email){
+        return userRepository.findByEmail(email);
     }
 
     public User createNewUser(RegistrationUserDto registrationUserDto){
