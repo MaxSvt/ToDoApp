@@ -32,8 +32,7 @@ public class Comment {
         this.isUpdated = false;
     }
 
-    public boolean changeStatus(boolean b) {
-        this.isUpdated = b;
-        return b;
+    public void changeStatus(boolean isUpdated) {
+        this.isUpdated = isUpdated;
     }
 }

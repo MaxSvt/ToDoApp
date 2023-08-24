@@ -46,6 +46,7 @@ public class CommentServiceImpl implements CommentService {
         if(!comment.isUpdated()){
             comment.changeStatus(true);
         }
+        commentRepository.save(comment);
         return mapper.toCommentDto(comment);
     }
 

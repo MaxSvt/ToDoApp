@@ -19,7 +19,10 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+    private String code;
     private String description;
+//    @ManyToOne
+//    private Employee projectManager;
     @Enumerated(EnumType.STRING)
     private ProjectStatus status;
     @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -28,8 +31,9 @@ public class Project {
     public Project() {
     }
 
-    public Project(String title, String description) {
+    public Project(String title, String code, String description) {
         this.title = title;
+        this.code = code;
         this.description = description;
         this.status = ProjectStatus.CREATED;
     }
@@ -54,7 +58,7 @@ public class Project {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, status, tasks);
+        return Objects.hash(id, title, code, description, status, tasks);
     }
 
     @Override
@@ -62,6 +66,7 @@ public class Project {
         return "Project{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
+                ", code='" + code + '\'' +
                 ", description='" + description + '\'' +
                 ", projectStatus=" + status +
                 ", tasks=" + tasks +

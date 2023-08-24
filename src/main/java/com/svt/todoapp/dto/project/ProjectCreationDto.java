@@ -7,5 +7,6 @@ import lombok.Setter;
 @Setter
 public class ProjectCreationDto {
     private String title;
+    private String code;
     private String description;
 }
