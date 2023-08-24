@@ -9,6 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ProjectSlimDto {
     private Long id;
+    private String code;
     private String title;
     private String status;
 }

@@ -3,6 +3,7 @@ package com.svt.todoapp.services.impl;
 import com.svt.todoapp.dto.user.RegistrationUserDto;
 import com.svt.todoapp.mapping.Mapper;
 import com.svt.todoapp.models.User;
+import com.svt.todoapp.repositories.RoleRepository;
 import com.svt.todoapp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class UserServiceImpl implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
-                user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getAuthority())).collect(Collectors.toList())
+                user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList())
         );
     }
 
