@@ -9,6 +9,7 @@ import com.svt.todoapp.dto.task.TaskCreationDto;
 import com.svt.todoapp.dto.task.TaskDto;
 import com.svt.todoapp.dto.task.TaskSlimDto;
 import com.svt.todoapp.dto.user.RegistrationUserDto;
+import com.svt.todoapp.dto.user.UserDto;
 import com.svt.todoapp.models.Comment;
 import com.svt.todoapp.models.Project;
 import com.svt.todoapp.models.Task;
@@ -22,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 @Component
 public class Mapper implements MapStructMapper {
@@ -118,15 +120,47 @@ public class Mapper implements MapStructMapper {
     }
 
     @Override
+    public UserDto toUserDto(User user) {
+        return new UserDto(
+                user.getId(),
+                user.getEmail(),
+                user.getUsername(),
+                generateDisplayName(user.getFirstname(), user.getLastname(), user.isActive()),
+                user.isActive()
+        );
+    }
+
+    @Override
     public User toUserEntity(RegistrationUserDto registrationUserDto) {
         User user = new User();
         user.setEmail(registrationUserDto.getEmail());
-        user.setUsername(registrationUserDto.getUsername());
+        user.setFirstname(registrationUserDto.getFirstname());
+        user.setLastname(registrationUserDto.getLastname());
+        user.setUsername(generateUsername(registrationUserDto.getEmail()));
         user.setPassword(passwordEncoder.encode(registrationUserDto.getPassword()));
-        user.getRoles().add(Role.ROLE_USER);
+        user.getRoles().add(Role.ROLE_ADMIN);
         user.setActive(true);
         user.setCreatedDate(LocalDateTime.now());
         return user;
+    }
+
+    protected String generateUsername(String email){
+        String[] emailParts = email.split("@");
+        return emailParts[0];
+    }
+
+    protected String generateDisplayName(String firstname, String lastname, boolean isActive){
+        StringJoiner displayStringJoiner = new StringJoiner(" ");
+        if(firstname != null){
+            displayStringJoiner.add(lastname);
+        }
+        if(lastname != null){
+            displayStringJoiner.add(firstname);
+        }
+        if(!isActive){
+            displayStringJoiner.add("[X](Неактивный)");
+        }
+        return displayStringJoiner.toString();
     }
 
     protected List<TaskSlimDto> taskDtoList(List<Task> list){

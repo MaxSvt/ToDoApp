@@ -24,6 +24,10 @@ public class User {
     private Long id;
     private String email;
     private String username;
+    @Column(name = "first_name", nullable = false)
+    private String firstname;
+    @Column(name = "last_name", nullable = false)
+    private String lastname;
     private boolean isActive;
     private String password;
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
