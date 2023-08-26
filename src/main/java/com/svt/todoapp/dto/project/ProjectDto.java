@@ -17,6 +17,7 @@ public class ProjectDto {
     private String title;
     private String code;
     private String description;
+    private String projectManager;
     private String status;
     private List<TaskSlimDto> tasks;
 }

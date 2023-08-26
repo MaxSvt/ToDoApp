@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 
 @RestController
 @RequestMapping("/api/v1/projects")
@@ -29,8 +31,8 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<ProjectDto>  create(@RequestBody ProjectCreationDto creationDto){
-        projectService.create(creationDto);
+    public ResponseEntity<ProjectDto>  create(@RequestBody ProjectCreationDto creationDto, Principal principal){
+        projectService.create(creationDto, principal.getName());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

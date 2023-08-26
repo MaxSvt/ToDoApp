@@ -27,7 +27,7 @@ public interface MapStructMapper {
 
     ProjectSlimDto toProjectSlimDto(Project project);
 
-    Project toProjectEntity(ProjectCreationDto dto);
+    Project toProjectEntity(ProjectCreationDto dto, User user);
 
     CommentDto toCommentDto(Comment comment);
 

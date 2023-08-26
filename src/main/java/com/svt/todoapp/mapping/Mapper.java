@@ -83,12 +83,10 @@ public class Mapper implements MapStructMapper {
         dto.setTitle(project.getTitle());
         dto.setCode(project.getCode());
         dto.setDescription(project.getDescription());
+        dto.setProjectManager(generateDisplayName(project.getProjectManager().getFirstname(),
+                project.getProjectManager().getLastname(), project.getProjectManager().isActive()));
         dto.setStatus(project.getStatus().getTitle());
-        if(project.getTasks().isEmpty()){
-            dto.setTasks(new ArrayList<>());
-        } else {
-            dto.setTasks(taskDtoList(project.getTasks()));
-        }
+        dto.setTasks(taskDtoList(project.getTasks()));
         return dto;
     }
 
@@ -103,11 +101,11 @@ public class Mapper implements MapStructMapper {
     }
 
     @Override
-    public Project toProjectEntity(ProjectCreationDto dto) {
+    public Project toProjectEntity(ProjectCreationDto dto, User user) {
         if(dto.getTitle().isEmpty() || dto.getDescription().isEmpty()){
             new NullPointerException().getMessage();
         }
-        return new Project(dto.getTitle(), dto.getCode(), dto.getDescription());
+        return new Project(dto.getTitle(), dto.getCode(), dto.getDescription(), user);
     }
 
     @Override
@@ -174,7 +172,7 @@ public class Mapper implements MapStructMapper {
 
     protected List<TaskSlimDto> taskDtoList(List<Task> list){
         if(list.isEmpty()){
-            return null;
+            return new ArrayList<>();
         }
         List<TaskSlimDto> dtoList = new ArrayList<>();
         for(Task task : list){

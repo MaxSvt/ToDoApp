@@ -4,7 +4,9 @@ import com.svt.todoapp.dto.project.ProjectCreationDto;
 import com.svt.todoapp.dto.project.ProjectDto;
 import com.svt.todoapp.mapping.Mapper;
 import com.svt.todoapp.models.Project;
+import com.svt.todoapp.models.User;
 import com.svt.todoapp.repositories.ProjectRepository;
+import com.svt.todoapp.repositories.UserRepository;
 import com.svt.todoapp.services.ProjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +29,9 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private final ProjectRepository projectRepository;
 
+    @Autowired
+    private final UserRepository userRepository;
+
     @Override
     public List<ProjectDto> getAll() {
         return projectRepository.findAll().stream().map(mapper::toProjectDto).collect(Collectors.toList());
@@ -37,8 +43,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void create(ProjectCreationDto project) {
-        projectRepository.save(mapper.toProjectEntity(project));
+    public void create(ProjectCreationDto projectDto, String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        Project project = mapper.toProjectEntity(projectDto, user);
+        projectRepository.save(project);
     }
 
     @Override
