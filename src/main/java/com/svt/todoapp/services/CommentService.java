@@ -5,7 +5,7 @@ import com.svt.todoapp.dto.comment.CommentDto;
 
 public interface CommentService {
 
-    void create(Long taskId, CommentCreationDto commentDto);
+    void create(Long taskId, CommentCreationDto commentDto, String author);
 
     CommentDto update(Long id, CommentCreationDto creationDto);
 

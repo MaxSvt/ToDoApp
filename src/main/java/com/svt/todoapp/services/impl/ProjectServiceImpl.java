@@ -1,18 +1,27 @@
 package com.svt.todoapp.services.impl;
 
+import com.svt.todoapp.dto.participant.ParticipantCreationDto;
 import com.svt.todoapp.dto.project.ProjectCreationDto;
 import com.svt.todoapp.dto.project.ProjectDto;
 import com.svt.todoapp.mapping.Mapper;
+import com.svt.todoapp.models.Position;
 import com.svt.todoapp.models.Project;
+import com.svt.todoapp.models.ProjectParticipant;
+import com.svt.todoapp.models.User;
+import com.svt.todoapp.repositories.ParticipantRepository;
 import com.svt.todoapp.repositories.ProjectRepository;
+import com.svt.todoapp.repositories.UserRepository;
 import com.svt.todoapp.services.ProjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +35,15 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private final ProjectRepository projectRepository;
 
+    @Autowired
+    private final UserServiceImpl userService;
+
+    @Autowired
+    private final PositionServiceImpl positionService;
+
+    @Autowired
+    private final ParticipantRepository participantRepository;
+
     @Override
     public List<ProjectDto> getAll() {
         return projectRepository.findAll().stream().map(mapper::toProjectDto).collect(Collectors.toList());
@@ -37,8 +55,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void create(ProjectCreationDto project) {
-        projectRepository.save(mapper.toProjectEntity(project));
+    public ProjectDto create(ProjectCreationDto projectDto, String username) {
+        User user = userService.findByUserName(username).orElseThrow();
+        Project project = mapper.toProjectEntity(projectDto, user);
+        return mapper.toProjectDto(projectRepository.save(project));
     }
 
     @Override
@@ -54,5 +74,16 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void delete(Long id) {
         projectRepository.deleteById(id);
+    }
+
+    @Override
+    public ProjectDto addEmployee(Long id, ParticipantCreationDto dto) {
+        ProjectParticipant participant = new ProjectParticipant();
+        Project project = projectRepository.findById(id).orElseThrow();
+        participant.setProject(project);
+        participant.setEmployee(userService.splitDisplayName(dto.getDisplayName()));
+        participant.setPosition(positionService.findByName(dto.getPosition()));
+        participantRepository.save(participant);
+        return mapper.toProjectDto(project);
     }
 }

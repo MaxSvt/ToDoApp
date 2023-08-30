@@ -6,9 +6,11 @@ import com.svt.todoapp.dto.task.UpdateTaskStatusDto;
 import com.svt.todoapp.mapping.Mapper;
 import com.svt.todoapp.models.Project;
 import com.svt.todoapp.models.Task;
+import com.svt.todoapp.models.User;
 import com.svt.todoapp.models.enums.TaskStatus;
 import com.svt.todoapp.repositories.ProjectRepository;
 import com.svt.todoapp.repositories.TaskRepository;
+import com.svt.todoapp.repositories.UserRepository;
 import com.svt.todoapp.services.TaskService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,11 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private final ProjectRepository projectRepository;
 
+    @Autowired
+    private final UserServiceImpl userService;
+
+
+
     @Override
     public List<TaskDto> getAll(Long projectId) {
         return taskRepository.findByProjectId(projectId).stream().map(mapper::toTaskDto).collect(Collectors.toList());
@@ -46,21 +53,17 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void create(Long projectId, TaskCreationDto taskDto) {
-        Project project = projectRepository.findById(projectId).orElse(null);
-        Task task = mapper.toTaskEntity(taskDto);
-        assert project != null;
+    public void create(Long projectId, TaskCreationDto taskDto, String authorName) {
+        User author = userService.findByUserName(authorName).orElseThrow();
+        Project project = projectRepository.findById(projectId).orElseThrow();
+        Task task = mapper.toTaskEntity(taskDto, author, userService.splitDisplayName(taskDto.getPerformer()));
         project.addTask(task);
         taskRepository.save(task);
     }
 
     @Override
     public TaskDto update(Long id, TaskCreationDto taskDto) {
-        Task task = taskRepository.findById(id).orElse(null);
-        assert task != null;
-        if(taskDto.getTitle().isEmpty() || taskDto.getDescription().isEmpty()){
-            new NullPointerException().getMessage();
-        }
+        Task task = taskRepository.findById(id).orElseThrow();
         task.setTitle(taskDto.getTitle());
         task.setDescription(taskDto.getDescription());
         task.setChangedDate(new Date());
@@ -96,5 +99,4 @@ public class TaskServiceImpl implements TaskService {
         // Добавить исключение!!!
         return null;
     }
-
 }

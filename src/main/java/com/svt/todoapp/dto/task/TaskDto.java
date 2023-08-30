@@ -18,6 +18,8 @@ public class TaskDto {
     private String title;
     private String description;
     private String status;
+    private String author;
+    private String performer;
     private String createdDate;
     private String changedDate;
     private ProjectSlimDto project;

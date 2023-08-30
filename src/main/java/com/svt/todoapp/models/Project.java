@@ -1,5 +1,6 @@
 package com.svt.todoapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.svt.todoapp.models.enums.ProjectStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,23 +19,35 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String title;
+
     private String code;
+
     private String description;
-//    @ManyToOne
-//    private Employee projectManager;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "employee_id")
+    @JsonIgnore
+    private User projectManager;
+
     @Enumerated(EnumType.STRING)
     private ProjectStatus status;
+
     @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Task> tasks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ProjectParticipant> participants = new ArrayList<>();
 
     public Project() {
     }
 
-    public Project(String title, String code, String description) {
+    public Project(String title, String code, String description, User projectManager) {
         this.title = title;
         this.code = code;
         this.description = description;
+        this.projectManager = projectManager;
         this.status = ProjectStatus.CREATED;
     }
 

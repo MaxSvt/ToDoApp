@@ -1,13 +1,17 @@
 package com.svt.todoapp.controllers;
 
+import com.svt.todoapp.dto.participant.ParticipantCreationDto;
 import com.svt.todoapp.dto.project.ProjectCreationDto;
 import com.svt.todoapp.dto.project.ProjectDto;
+import com.svt.todoapp.exceptions.AppError;
 import com.svt.todoapp.services.impl.ProjectServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 
 @RestController
@@ -29,9 +33,16 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<ProjectDto>  create(@RequestBody ProjectCreationDto creationDto){
-        projectService.create(creationDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<?> create(@RequestBody ProjectCreationDto creationDto, Principal principal){
+        if(creationDto.getTitle().isEmpty() || creationDto.getDescription().isEmpty() || creationDto.getCode().isEmpty()){
+            return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), "Fill title or description or code"), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(projectService.create(creationDto, principal.getName()), HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/{id}/participants")
+    public ResponseEntity<?> addEmployee(@PathVariable(value = "id") Long id, @RequestBody ParticipantCreationDto dto){
+        return new ResponseEntity<>(projectService.addEmployee(id, dto), HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}")

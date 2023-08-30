@@ -8,4 +8,5 @@ import lombok.Setter;
 public class TaskCreationDto {
     private String title;
     private String description;
+    private String performer;
 }
