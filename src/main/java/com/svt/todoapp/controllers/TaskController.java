@@ -3,6 +3,7 @@ package com.svt.todoapp.controllers;
 import com.svt.todoapp.dto.task.TaskCreationDto;
 import com.svt.todoapp.dto.task.TaskDto;
 import com.svt.todoapp.dto.task.UpdateTaskStatusDto;
+import com.svt.todoapp.exceptions.AppError;
 import com.svt.todoapp.exceptions.ResourceNotFoundException;
 import com.svt.todoapp.models.Task;
 import com.svt.todoapp.repositories.ProjectRepository;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 
@@ -39,8 +41,11 @@ public class TaskController {
     }
 
     @PostMapping(value = "/projects/{projectId}/tasks")
-    public ResponseEntity<TaskDto> create(@PathVariable(value = "projectId") Long projectId, @RequestBody TaskCreationDto taskDto){
-        taskService.create(projectId, taskDto);
+    public ResponseEntity<?> create(@PathVariable(value = "projectId") Long projectId, @RequestBody TaskCreationDto taskDto, Principal principal){
+        if(taskDto.getTitle().isEmpty() || taskDto.getDescription().isEmpty()){
+            return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), "Fill title or description"), HttpStatus.BAD_REQUEST);
+        }
+        taskService.create(projectId, taskDto, principal.getName());
         return ResponseEntity.ok().build();
     }
 
@@ -51,7 +56,10 @@ public class TaskController {
     }
 
     @PutMapping(value = "/tasks/{id}")
-    public ResponseEntity<TaskDto> updateTask(@PathVariable(value = "id") Long id, @RequestBody TaskCreationDto taskDto){
+    public ResponseEntity<?> updateTask(@PathVariable(value = "id") Long id, @RequestBody TaskCreationDto taskDto){
+        if(taskDto.getTitle().isEmpty() || taskDto.getDescription().isEmpty()){
+            return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), "Fill title or description"), HttpStatus.BAD_REQUEST);
+        }
         TaskDto postResponse = taskService.update(id, taskDto);
         return ResponseEntity.ok().body(postResponse);
     }

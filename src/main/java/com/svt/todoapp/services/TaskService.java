@@ -11,7 +11,7 @@ public interface TaskService {
 
     TaskDto getById(Long id);
 
-    void create(Long projectId, TaskCreationDto task);
+    void create(Long projectId, TaskCreationDto taskDto, String authorName);
 
     TaskDto update(Long id, TaskCreationDto taskDto);
 

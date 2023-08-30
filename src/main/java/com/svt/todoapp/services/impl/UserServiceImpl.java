@@ -55,4 +55,10 @@ public class UserServiceImpl implements UserDetailsService {
         return userRepository.save(mapper.toUserEntity(registrationUserDto));
     }
 
+    protected User splitDisplayName(String displayName){
+        String[] firstnameAndLastname = displayName.split(" ");
+        return userRepository.findByLastnameAndFirstname(firstnameAndLastname[0],
+                firstnameAndLastname[1]).orElseThrow();
+    }
+
 }

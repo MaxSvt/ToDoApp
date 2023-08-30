@@ -2,6 +2,10 @@ package com.svt.todoapp.mapping;
 
 import com.svt.todoapp.dto.comment.CommentCreationDto;
 import com.svt.todoapp.dto.comment.CommentDto;
+import com.svt.todoapp.dto.participant.ParticipantCreationDto;
+import com.svt.todoapp.dto.participant.ParticipantDto;
+import com.svt.todoapp.dto.position.PositionCreationDto;
+import com.svt.todoapp.dto.position.PositionDto;
 import com.svt.todoapp.dto.project.ProjectCreationDto;
 import com.svt.todoapp.dto.project.ProjectDto;
 import com.svt.todoapp.dto.project.ProjectSlimDto;
@@ -10,10 +14,7 @@ import com.svt.todoapp.dto.task.TaskDto;
 import com.svt.todoapp.dto.task.TaskSlimDto;
 import com.svt.todoapp.dto.user.RegistrationUserDto;
 import com.svt.todoapp.dto.user.UserDto;
-import com.svt.todoapp.models.Comment;
-import com.svt.todoapp.models.Project;
-import com.svt.todoapp.models.Task;
-import com.svt.todoapp.models.User;
+import com.svt.todoapp.models.*;
 import com.svt.todoapp.repositories.RoleRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -47,14 +48,14 @@ public class Mapper implements MapStructMapper {
         dto.setTitle(task.getTitle());
         dto.setDescription(task.getDescription());
         dto.setStatus(task.getStatus().getTitle());
+        dto.setAuthor(generateDisplayName(task.getAuthor().getFirstname(),
+                task.getAuthor().getLastname(), task.getAuthor().isActive()));
+        dto.setPerformer(generateDisplayName(task.getPerformer().getFirstname(),
+                task.getPerformer().getLastname(), task.getPerformer().isActive()));
         dto.setCreatedDate(DATE_FORMAT.format(task.getCreatedDate()));
         dto.setChangedDate(DATE_FORMAT.format(task.getChangedDate()));
         dto.setProject(toProjectSlimDto(task.getProject()));
-        if(task.getComments().isEmpty()){
-            dto.setComments(new ArrayList<>());
-        } else{
-            dto.setComments(commentDtoList(task.getComments()));
-        }
+        dto.setComments(commentDtoList(task.getComments()));
         return dto;
     }
 
@@ -68,12 +69,8 @@ public class Mapper implements MapStructMapper {
     }
 
     @Override
-    public Task toTaskEntity(TaskCreationDto dto){
-        // ДОБАВИТЬ ИСКЛЮЧЕНИЕ!!!
-        if(dto.getTitle().isEmpty() || dto.getDescription().isEmpty()){
-            new NullPointerException().getMessage();
-        }
-        return new Task(dto.getTitle(), dto.getDescription());
+    public Task toTaskEntity(TaskCreationDto dto, User author, User performer){
+        return new Task(dto.getTitle(), dto.getDescription(), author, performer);
     }
 
     @Override
@@ -87,6 +84,7 @@ public class Mapper implements MapStructMapper {
                 project.getProjectManager().getLastname(), project.getProjectManager().isActive()));
         dto.setStatus(project.getStatus().getTitle());
         dto.setTasks(taskDtoList(project.getTasks()));
+        dto.setParticipants(participantDtoList(project.getParticipants()));
         return dto;
     }
 
@@ -102,9 +100,6 @@ public class Mapper implements MapStructMapper {
 
     @Override
     public Project toProjectEntity(ProjectCreationDto dto, User user) {
-        if(dto.getTitle().isEmpty() || dto.getDescription().isEmpty()){
-            new NullPointerException().getMessage();
-        }
         return new Project(dto.getTitle(), dto.getCode(), dto.getDescription(), user);
     }
 
@@ -113,17 +108,16 @@ public class Mapper implements MapStructMapper {
         CommentDto commentDto = new CommentDto();
         commentDto.setId(comment.getId());
         commentDto.setDescription(comment.getDescription());
+        commentDto.setAuthor(generateDisplayName(comment.getAuthor().getFirstname(),
+                comment.getAuthor().getLastname(), comment.getAuthor().isActive()));
         commentDto.setCreationDate(DATE_FORMAT.format(comment.getCreatedDate()));
         commentDto.setUpdated(comment.isUpdated());
         return commentDto;
     }
 
     @Override
-    public Comment toCommentEntity(CommentCreationDto dto) {
-        if(dto.getDescription().isEmpty()){
-            new NullPointerException().getMessage();
-        }
-        return new Comment(dto.getDescription());
+    public Comment toCommentEntity(CommentCreationDto dto, User user) {
+        return new Comment(dto.getDescription(), user);
     }
 
     @Override
@@ -149,6 +143,35 @@ public class Mapper implements MapStructMapper {
         user.setActive(true);
         user.setCreatedDate(LocalDateTime.now());
         return user;
+    }
+
+    @Override
+    public ProjectParticipant toParticipantEntity(ParticipantCreationDto dto) {
+        return null;
+    }
+
+    @Override
+    public ParticipantDto toParticipantDto(ProjectParticipant participant) {
+        ParticipantDto dto = new ParticipantDto();
+        dto.setId(participant.getId());
+        dto.setEmployee(toUserDto(participant.getEmployee()));
+        dto.setPosition(toPositionDto(participant.getPosition()));
+        return dto;
+    }
+
+    @Override
+    public PositionDto toPositionDto(Position position) {
+        PositionDto dto = new PositionDto();
+        dto.setId(position.getId());
+        dto.setName(position.getName());
+        return dto;
+    }
+
+    @Override
+    public Position toPositionEntity(PositionCreationDto dto) {
+        Position position = new Position();
+        position.setName(dto.getName());
+        return position;
     }
 
     protected String generateUsername(String email){
@@ -183,11 +206,22 @@ public class Mapper implements MapStructMapper {
 
     protected List<CommentDto> commentDtoList(List<Comment> list){
         if(list.isEmpty()){
-            return null;
+            return new ArrayList<>();
         }
         List<CommentDto> dtoList = new ArrayList<>();
         for(Comment comment : list){
             dtoList.add(toCommentDto(comment));
+        }
+        return dtoList;
+    }
+
+    protected List<ParticipantDto> participantDtoList(List<ProjectParticipant> list){
+        if(list.isEmpty()){
+            return new ArrayList<>();
+        }
+        List<ParticipantDto> dtoList = new ArrayList<>();
+        for(ProjectParticipant participant : list){
+            dtoList.add(toParticipantDto(participant));
         }
         return dtoList;
     }

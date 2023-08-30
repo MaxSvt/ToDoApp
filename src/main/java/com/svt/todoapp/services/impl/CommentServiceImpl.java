@@ -5,8 +5,10 @@ import com.svt.todoapp.dto.comment.CommentDto;
 import com.svt.todoapp.mapping.Mapper;
 import com.svt.todoapp.models.Comment;
 import com.svt.todoapp.models.Task;
+import com.svt.todoapp.models.User;
 import com.svt.todoapp.repositories.CommentRepository;
 import com.svt.todoapp.repositories.TaskRepository;
+import com.svt.todoapp.repositories.UserRepository;
 import com.svt.todoapp.services.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,11 +31,14 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private final TaskRepository taskRepository;
 
+    @Autowired
+    private final UserRepository userRepository;
+
     @Override
-    public void create(Long taskId, CommentCreationDto commentDto) {
-        Task task = taskRepository.findById(taskId).orElse(null);
-        Comment comment = mapper.toCommentEntity(commentDto);
-        assert task != null;
+    public void create(Long taskId, CommentCreationDto commentDto, String author) {
+        Task task = taskRepository.findById(taskId).orElseThrow();
+        User user = userRepository.findByUsername(author).orElseThrow();
+        Comment comment = mapper.toCommentEntity(commentDto, user);
         task.addComment(comment);
         commentRepository.save(comment);
     }
