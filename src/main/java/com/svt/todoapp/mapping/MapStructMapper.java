@@ -38,7 +38,7 @@ public interface MapStructMapper {
 
     User toUserEntity(RegistrationUserDto registrationUserDto);
 
-    ProjectParticipant toParticipantEntity(ParticipantCreationDto dto);
+    ProjectParticipant toParticipantEntity(ParticipantCreationDto dto, Project project, User user, Position position);
 
     ParticipantDto toParticipantDto(ProjectParticipant participant);
 

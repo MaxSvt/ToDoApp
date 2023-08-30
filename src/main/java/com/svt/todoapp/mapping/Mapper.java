@@ -146,8 +146,12 @@ public class Mapper implements MapStructMapper {
     }
 
     @Override
-    public ProjectParticipant toParticipantEntity(ParticipantCreationDto dto) {
-        return null;
+    public ProjectParticipant toParticipantEntity(ParticipantCreationDto dto, Project project, User user, Position position) {
+        ProjectParticipant participant = new ProjectParticipant();
+        participant.setProject(project);
+        participant.setEmployee(user);
+        participant.setPosition(position);
+        return participant;
     }
 
     @Override

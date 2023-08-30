@@ -51,7 +51,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDto getById(Long id) {
-        return mapper.toProjectDto(Objects.requireNonNull(projectRepository.findById(id).orElse(null)));
+        return mapper.toProjectDto(Objects.requireNonNull(projectRepository.findById(id).orElseThrow()));
     }
 
     @Override
@@ -63,8 +63,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDto update(Long id, ProjectCreationDto projectDto) {
-        Project project = projectRepository.findById(id).orElse(null);
-        assert project != null;
+        Project project = projectRepository.findById(id).orElseThrow();
         project.setTitle(projectDto.getTitle());
         project.setDescription(projectDto.getDescription());
         projectRepository.save(project);
@@ -78,12 +77,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDto addEmployee(Long id, ParticipantCreationDto dto) {
-        ProjectParticipant participant = new ProjectParticipant();
         Project project = projectRepository.findById(id).orElseThrow();
-        participant.setProject(project);
-        participant.setEmployee(userService.splitDisplayName(dto.getDisplayName()));
-        participant.setPosition(positionService.findByName(dto.getPosition()));
-        participantRepository.save(participant);
+        participantRepository.save(mapper.toParticipantEntity(dto, project,
+                userService.splitDisplayName(dto.getDisplayName()), positionService.findByName(dto.getPosition())));
         return mapper.toProjectDto(project);
     }
 }
