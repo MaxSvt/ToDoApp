@@ -35,7 +35,8 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody ProjectCreationDto creationDto, Principal principal){
         if(creationDto.getTitle().isEmpty() || creationDto.getDescription().isEmpty() || creationDto.getCode().isEmpty()){
-            return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), "Fill title or description or code"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(),
+                    "Fill title or description or code"), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(projectService.create(creationDto, principal.getName()), HttpStatus.CREATED);
     }
@@ -46,7 +47,12 @@ public class ProjectController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ProjectDto> updateProject(@PathVariable(value = "id") Long id, @RequestBody ProjectCreationDto projectDto){
+    public ResponseEntity<?> updateProject(@PathVariable(value = "id") Long id,
+                                                    @RequestBody ProjectCreationDto projectDto){
+        if(projectDto.getTitle().isEmpty() || projectDto.getDescription().isEmpty() || projectDto.getCode().isEmpty()){
+            return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(),
+                    "Fill title or description or code"), HttpStatus.BAD_REQUEST);
+        }
         ProjectDto postResponse = projectService.update(id, projectDto);
         return ResponseEntity.ok().body(postResponse);
     }
