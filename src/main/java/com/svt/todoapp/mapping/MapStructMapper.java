@@ -13,6 +13,7 @@ import com.svt.todoapp.dto.task.TaskCreationDto;
 import com.svt.todoapp.dto.task.TaskDto;
 import com.svt.todoapp.dto.task.TaskSlimDto;
 import com.svt.todoapp.dto.user.RegistrationUserDto;
+import com.svt.todoapp.dto.user.UpdateUserDto;
 import com.svt.todoapp.dto.user.UserDto;
 import com.svt.todoapp.models.*;
 
@@ -37,6 +38,8 @@ public interface MapStructMapper {
     UserDto toUserDto(User user);
 
     User toUserEntity(RegistrationUserDto registrationUserDto);
+
+    User toUpdatedUserDto(User user, UpdateUserDto userDto);
 
     ProjectParticipant toParticipantEntity(ParticipantCreationDto dto, Project project, User user, Position position);
 

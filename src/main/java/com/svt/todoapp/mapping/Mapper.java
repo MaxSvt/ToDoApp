@@ -13,6 +13,7 @@ import com.svt.todoapp.dto.task.TaskCreationDto;
 import com.svt.todoapp.dto.task.TaskDto;
 import com.svt.todoapp.dto.task.TaskSlimDto;
 import com.svt.todoapp.dto.user.RegistrationUserDto;
+import com.svt.todoapp.dto.user.UpdateUserDto;
 import com.svt.todoapp.dto.user.UserDto;
 import com.svt.todoapp.models.*;
 import com.svt.todoapp.repositories.RoleRepository;
@@ -142,6 +143,15 @@ public class Mapper implements MapStructMapper {
         user.setRoles(List.of(roleRepository.findByName("ROLE_USER").get()));
         user.setActive(true);
         user.setCreatedDate(LocalDateTime.now());
+        return user;
+    }
+
+    @Override
+    public User toUpdatedUserDto(User user, UpdateUserDto userDto) {
+        user.setFirstname(userDto.getFirstname());
+        user.setLastname(userDto.getLastname());
+        user.setEmail(userDto.getEmail());
+        user.setUsername(generateUsername(userDto.getEmail()));
         return user;
     }
 

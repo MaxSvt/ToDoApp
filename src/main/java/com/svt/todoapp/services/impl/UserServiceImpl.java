@@ -1,6 +1,8 @@
 package com.svt.todoapp.services.impl;
 
 import com.svt.todoapp.dto.user.RegistrationUserDto;
+import com.svt.todoapp.dto.user.UpdateUserDto;
+import com.svt.todoapp.dto.user.UserDto;
 import com.svt.todoapp.mapping.Mapper;
 import com.svt.todoapp.models.User;
 import com.svt.todoapp.repositories.RoleRepository;
@@ -15,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -40,6 +43,19 @@ public class UserServiceImpl implements UserDetailsService {
                 user.getPassword(),
                 user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList())
         );
+    }
+
+    public List<UserDto> findAll(){
+        return userRepository.findAll().stream().map(mapper::toUserDto).collect(Collectors.toList());
+    }
+
+    public UserDto findById(Long id){
+        return mapper.toUserDto(userRepository.findById(id).orElseThrow());
+    }
+
+    public UserDto updateUser(Long id, UpdateUserDto dto){
+        User user = userRepository.findById(id).orElseThrow();
+        return mapper.toUserDto(userRepository.save(mapper.toUpdatedUserDto(user, dto)));
     }
 
     public Optional<User> findByUserName(String username){
