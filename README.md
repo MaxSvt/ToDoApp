@@ -2,26 +2,40 @@
 
 ## Description
 
-Система управления проектами, востребованная у небольших творческих коллективов: разработчиков, тестировщиков, аналитиков. Подходит для планирования работы и наведения порядка в задачах.
+A project management system that is in demand among small creative teams: developers, testers, analysts. Suitable for planning work and putting tasks in order.
 
 ## Architecture
 ![Project managemetnt system](https://github.com/MaxSvt/ToDoApp/assets/51627564/1f31beac-2a51-4676-91e0-447c7e7bc29b)
 
+## Technology used in this Project:
 
-## Table of Contents (Optional)
+1) Java : all the logic has been written in java.
+2) MySQL: PostgreSQL database has been used as database.
+3) Spring Framework.
+4) Spring Boot.
+5) SpringSecurity: SpringSecurity has been used for authentication.
+6) JWT token for Authorization.
+7) Spring Data JPA.
+8) Hibernate: Hibernate ORM is used.
 
-If your README is long, add a table of contents to make it easy for users to find what they need.
+## Software And Tools Required:
 
-- [Installation](#installation)
-- [Usage](#usage)
-- [Credits](#credits)
-- [License](#license)
+- Java JDK 17
+- Intellij Idea
+- MySQL
 
-## Installation
+## Installation & Run
 
-What are the steps required to install your project? Provide a step-by-step description of how to get the development environment running.
+- Before running the API server, you should update the database config inside the application.properties file.
+- Update the port number, username and password as per your local database config.
+```
+server.port=8089
+spring.datasource.url=jdbc:postgresql://localhost:5432/todoapp
+spring.datasource.username=postgres
+spring.datasource.password=root
+```
 
-## Methods
+## Sample API requests
 ```
 POST Registration /registration
 ```
@@ -44,8 +58,14 @@ Body
 
 ```json
 {
-    "username": "Svetlov.M",
-    "password": "123"
+    "username": "string",
+    "password": "string"
+}
+```
+Response
+```json
+{
+    "token": "HEADER.PAYLOAD.VERIFY SIGNATURE"
 }
 ```
 -------------------------------------
@@ -114,11 +134,6 @@ Body
 }
 ```
 -------------------------------------
-
-
-## How to Contribute
-
-If you created an application or package and would like other developers to contribute it, you can include guidelines for how to do so. The [Contributor Covenant](https://www.contributor-covenant.org/) is an industry standard, but you can always write your own if you'd prefer.
 
 ## Tests
 
